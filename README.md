@@ -170,7 +170,6 @@ Augnito/
 ├── punctuation_restoration.ipynb   # Main Colab notebook
 ├── README.md                        # This file
 ├── requirements.txt                 # Python dependencies
-├── problem_statement.md             # Original assignment
 └── results/                         # Generated results (created during execution)
     ├── figures/                     # Visualizations
     ├── models/                      # Saved model checkpoints
@@ -189,19 +188,6 @@ The Jupyter notebook is extensively documented with:
 - **Inline explanations**: Complex algorithm details
 - **Visualization captions**: Interpreting results
 
-## 📝 Assignment Compliance
-
-This project addresses all assignment requirements:
-
-✅ **Dataset Creation**: Synthetic dataset from mental health conversations  
-✅ **Dataset Understanding**: Detailed structure description  
-✅ **Data Preprocessing**: Cleaning, tokenization, splitting  
-✅ **Training**: Fine-tuning on domain-specific data  
-✅ **Language Model**: Integrated transformer architecture  
-✅ **Comparison**: Baseline vs. fine-tuned evaluation  
-✅ **EDA**: Comprehensive data and results analysis  
-✅ **Documentation**: Code, algorithms, and reasoning explained  
-
 ## 🎬 Presentation
 
 The notebook provides a complete walkthrough of:
@@ -216,7 +202,6 @@ Designed for: **Google Colab** ([https://colab.google/](https://colab.google/))
 
 ## ⏱️ Time Duration
 
-**Assignment Duration**: 3 days  
 **Estimated Execution Time**: 2-3 hours (including training)
 
 ## 💾 Model Persistence
@@ -254,4 +239,4 @@ result = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
 ---
 
-**Note**: This project is completed as part of an NLP assignment focused on punctuation restoration in domain-specific text.
+**Note**: This is a standalone learning project focused on punctuation restoration in domain-specific text.

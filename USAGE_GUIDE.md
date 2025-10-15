@@ -160,16 +160,16 @@ print(result)  # Output: "how are you feeling today?"
 
 If you prefer cloud storage, uncomment the Google Drive save code in the notebook's final cells.
 
-## 🎯 Assignment Deliverables
+## 🎯 Project Deliverables
 
-This notebook satisfies all requirements:
-1. ✅ Dataset creation and understanding
-2. ✅ Data preprocessing
-3. ✅ Model training and fine-tuning
-4. ✅ Baseline vs fine-tuned comparison
-5. ✅ EDA on train data and results
-6. ✅ Complete documentation
-7. ✅ Challenges and solutions explained
+This notebook includes:
+1. Dataset creation and understanding
+2. Data preprocessing
+3. Model training and fine-tuning
+4. Baseline vs fine-tuned comparison
+5. EDA on train data and results
+6. Complete documentation
+7. Challenges and solutions explained
 
 ## 💡 Tips
 
