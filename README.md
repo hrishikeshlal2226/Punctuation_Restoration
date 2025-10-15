@@ -20,9 +20,10 @@ This project implements an end-to-end punctuation restoration system for mental 
 
 - **Original Dataset**: Conversations between users and psychologists
 - **Key Column**: `Response` - contains psychologist responses with proper punctuation
-- **Synthetic Dataset Creation**:
-  - Input: Text with punctuation removed
-  - Labels: Token-level punctuation predictions
+- **Synthetic Dataset Creation** (Sentence-level):
+  - Input: Sentence with punctuation removed (lowercase)
+  - Output: Original punctuated sentence
+  - Sentence-level processing avoids truncation issues
   - Punctuation types: Period (.), Comma (,), Question (?), Exclamation (!)
 
 ### Dataset Statistics
@@ -45,29 +46,37 @@ The dataset will be analyzed for:
 
 ### 2. Model Architecture
 
-**Token Classification Approach**:
-- Base Model: BERT/RoBERTa/DistilBERT
-- Task: Multi-class classification for each token
-- Output Classes: `O` (no punctuation), `PERIOD`, `COMMA`, `QUESTION`, `EXCLAMATION`
+**Sequence-to-Sequence (Seq2Seq) Approach with T5**:
+- Base Model: T5-small (~60M parameters)
+- Task: Text-to-text generation ("restore punctuation: [input]" → "[punctuated output]")
+- Sentence-level processing to avoid truncation issues
+- Punctuation types handled: Period (.), Comma (,), Question (?), Exclamation (!)
 
 **Two Model Variants**:
-1. **Baseline**: Pre-trained model without fine-tuning
-2. **Fine-tuned**: Model trained on mental health conversations
+1. **Baseline**: Pre-trained T5 without domain fine-tuning
+2. **Fine-tuned**: T5 trained on mental health conversations
 
 ### 3. Training Configuration
 
 - **Optimizer**: AdamW
-- **Learning Rate**: 2e-5 to 5e-5
-- **Batch Size**: 8-16 (depending on GPU memory)
-- **Epochs**: 3-5
-- **Loss Function**: Cross-entropy loss
+- **Learning Rate**: 3e-4
+- **Batch Size**: 8
+- **Epochs**: 4
+- **Max Length**: 128 tokens
+- **Loss Function**: Cross-entropy (Seq2Seq)
+- **Strategy**: Load best model at end
 
 ### 4. Evaluation Metrics
 
-- **Token-level Accuracy**: Overall punctuation prediction accuracy
-- **Per-class Metrics**: Precision, Recall, F1 for each punctuation type
-- **Confusion Matrix**: Visualization of prediction patterns
-- **Qualitative Analysis**: Sample predictions with human evaluation
+**Comprehensive Evaluation Suite:**
+- **Character-level Accuracy**: Percentage of characters correctly predicted
+- **Token-level Accuracy**: Percentage of tokens with correct punctuation
+- **Exact Match Rate**: Percentage of perfectly restored sentences
+- **ROUGE Scores**: ROUGE-1, ROUGE-2, ROUGE-L for n-gram overlap
+- **Hamming Distance**: Positional differences in character sequences
+- **Per-punctuation Metrics**: Precision, Recall, F1 for each mark (. , ? !)
+- **Macro/Micro F1**: Averaged performance metrics
+- **Qualitative Analysis**: Sample predictions with ground truth comparison
 
 ## 🚀 Usage
 
@@ -102,8 +111,12 @@ The notebook includes comprehensive analysis:
 - Domain-specific vocabulary insights
 
 ### Model Performance
-- Baseline vs. Fine-tuned comparison
-- Per-punctuation-type metrics
+- **Comprehensive Baseline vs. Fine-tuned comparison** with all metrics
+- Character, Token, and Exact Match accuracy
+- ROUGE-1, ROUGE-2, ROUGE-L sequence-level metrics
+- Hamming distance for sequence similarity
+- Per-punctuation F1 scores (. , ? !)
+- Macro and Micro averaged precision, recall, F1
 - Training curves and loss plots
 - Sample predictions with ground truth
 - **Model persistence**: Trained model saved and downloadable for future use
@@ -115,37 +128,40 @@ The notebook includes comprehensive analysis:
 
 ## 🔧 Technical Choices
 
-### Why Token Classification?
-- **Interpretability**: Clear understanding of which punctuation follows each token
-- **Efficiency**: Direct prediction without sequence generation overhead
-- **Evaluation**: Easier to compute token-level metrics
+### Why Seq2Seq (T5)?
+- **Natural Generation**: Direct text-to-text transformation
+- **Flexibility**: Handles multiple punctuation marks per sentence
+- **Context**: Encoder-decoder captures full sentence context
+- **Simplicity**: No token alignment issues
 
-### Why BERT/RoBERTa?
-- **Pre-trained Knowledge**: Strong language understanding from large corpora
-- **Bidirectional Context**: Captures context from both directions
-- **Fine-tuning Capability**: Excellent performance on downstream tasks
+### Why T5 Seq2Seq?
+- **Text-to-Text**: Natural fit for punctuation restoration
+- **Flexibility**: Handles variable length outputs naturally
+- **Pre-trained**: Strong language understanding from large corpora
+- **Efficiency**: T5-small balances performance and resource usage
+- **Fine-tuning**: Excellent adaptation to domain-specific tasks
 
 ### Language Model Integration
-- **Internal**: Transformer layers provide contextual embeddings
-- **External**: Option to use external LM for perplexity-based reranking
+- **Internal**: T5 encoder-decoder provides contextual understanding
+- **External**: Option to use beam search for better generation quality
 
 ## 🎓 Challenges & Solutions
 
 ### Challenge 1: Ambiguous Punctuation Placement
 - **Problem**: Multiple valid punctuation positions
-- **Solution**: Use context window and semantic understanding from fine-tuning
+- **Solution**: T5's encoder-decoder with attention captures semantic context
 
-### Challenge 2: Class Imbalance
-- **Problem**: Periods more common than question marks
-- **Solution**: Class weighting and balanced sampling
+### Challenge 2: Long Responses
+- **Problem**: Full responses may exceed model's max length
+- **Solution**: Sentence-level splitting for balanced examples without truncation
 
 ### Challenge 3: Domain-Specific Language
 - **Problem**: Mental health terminology differs from general text
 - **Solution**: Fine-tuning on domain-specific conversations
 
-### Challenge 4: Long Context Dependencies
-- **Problem**: Some punctuation requires long-range context
-- **Solution**: Use models with larger context windows (512 tokens)
+### Challenge 4: Evaluation Complexity
+- **Problem**: Need comprehensive metrics beyond simple accuracy
+- **Solution**: Multi-metric evaluation (ROUGE, Hamming, F1, etc.)
 
 ## 📁 Project Structure
 

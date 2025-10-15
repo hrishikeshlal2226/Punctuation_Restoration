@@ -16,6 +16,8 @@ plotly>=5.14.0
 # Metrics and Evaluation
 scikit-learn>=1.2.0
 evaluate>=0.4.0
+rouge-score>=0.1.2
+sentencepiece>=0.1.99
 
 # Dataset Download
 kaggle>=1.5.16
