@@ -77,6 +77,7 @@ The dataset will be analyzed for:
 2. Upload your Kaggle API credentials (`kaggle.json`)
 3. Run all cells sequentially
 4. Review results and visualizations
+5. **Model Download**: The trained model is automatically saved and downloaded as a zip file at the end
 
 ### Local Setup
 
@@ -105,6 +106,7 @@ The notebook includes comprehensive analysis:
 - Per-punctuation-type metrics
 - Training curves and loss plots
 - Sample predictions with ground truth
+- **Model persistence**: Trained model saved and downloadable for future use
 
 ### Key Findings
 - Effectiveness of fine-tuning on domain-specific text
@@ -157,6 +159,10 @@ Augnito/
     ├── figures/                     # Visualizations
     ├── models/                      # Saved model checkpoints
     └── predictions/                 # Sample outputs
+
+After execution, the trained model is saved to:
+- Local: ./punctuation_t5/final_model/
+- Download: punctuation_t5_finetuned_model.zip (automatically downloaded)
 ```
 
 ## 🔍 Code Documentation
@@ -196,6 +202,33 @@ Designed for: **Google Colab** ([https://colab.google/](https://colab.google/))
 
 **Assignment Duration**: 3 days  
 **Estimated Execution Time**: 2-3 hours (including training)
+
+## 💾 Model Persistence
+
+After training completes, the fine-tuned model is automatically:
+
+1. **Saved locally** to `./punctuation_t5/final_model/` directory
+2. **Downloaded as zip** file (`punctuation_t5_finetuned_model.zip`) to your local machine
+3. **Optional Google Drive save** - Code provided for saving to Google Drive
+
+### Reusing the Model
+
+To reuse the trained model in future projects:
+
+```python
+from transformers import T5Tokenizer, T5ForConditionalGeneration
+
+# Load the saved model
+model_path = "./punctuation_t5_finetuned_model"  # After extracting zip
+tokenizer = T5Tokenizer.from_pretrained(model_path)
+model = T5ForConditionalGeneration.from_pretrained(model_path)
+
+# Use for punctuation restoration
+input_text = "restore punctuation: your text here"
+inputs = tokenizer(input_text, return_tensors='pt', max_length=128, truncation=True)
+outputs = model.generate(**inputs, max_length=128)
+result = tokenizer.decode(outputs[0], skip_special_tokens=True)
+```
 
 ## 🙏 Acknowledgments
 
